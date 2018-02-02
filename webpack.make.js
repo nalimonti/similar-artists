@@ -6,6 +6,7 @@ var autoprefixer = require('autoprefixer-core');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+
 module.exports = function makeWebpackConfig (options) {
   /**
    * Environment type
@@ -109,7 +110,26 @@ module.exports = function makeWebpackConfig (options) {
       // Allow loading html through js
       test: /\.html$/,
       loader: 'raw'
-    }]
+    },
+    //     {
+    //     test: /datatables\.net.*/,
+    //     loader: 'imports?define=>false'
+    // },
+    //     {
+    //       test: require.resolve('datatables.net'),
+    //         use: ['expose-loader?jQuery!expose-loader?$!expose-loader?window.$!expose-loader?window.jQuery',
+    //             'imports-loader?define=>false'
+    //         ]
+    //     },
+        {
+        test: require.resolve('jquery'),
+        loader: 'expose-loader?jQuery!expose-loader?$!expose-loader?window.$!expose-loader?window.jQuery'
+
+        }
+    //     { test: require.resolve("datatables.net"), loader: "imports?define=>false,$=jquery"},
+    //     { test: require.resolve("datatables.net-bs"), loader: "imports?define=>false,$=jquery"}
+
+    ]
   };
 
   // ISPARTA LOADER
@@ -175,6 +195,13 @@ module.exports = function makeWebpackConfig (options) {
     // Disabled when in test mode or not in build mode
     new ExtractTextPlugin('[name].[hash].css', {
       disable: !BUILD || TEST
+    }),
+
+    new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery',
+        'window.$': 'jquery',
+        'window.jQuery': 'jquery'
     })
   ];
 
